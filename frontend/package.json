@@ -1,0 +1,21 @@
+{
+  "name": "@blog/frontend",
+  "version": "0.0.0",
+  "scripts": {
+    
+  },
+  "dependencies": {
+  
+  },
+  "devDependencies": {
+  
+  },
+  "license": "MIT",
+  "description": "frontend for blog",
+  "main": "src/main.tsx",
+  "repository": "git+https://github.com/ricevind/fullstack-open-4.git",
+  "author": "MK",
+  "bugs": {
+    "url": "https://github.com/ricevind/fullstack-open-4/issues"
+  }
+}

@@ -1,0 +1,10 @@
+
+POST http://localhost:3001/api/blog
+Content-Type: application/json
+
+{
+  "title": "A beautifull title",
+  "author": "MK",
+  "url": "https://www.world.com/blog-123",
+  "likes": 1234
+}
