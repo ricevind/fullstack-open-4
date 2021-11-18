@@ -4,12 +4,10 @@ const blogSchema = new mongoose.Schema({
     title: String,
     author: String,
     url: String,
-    likes: Number
-})
-
+    likes: Number,
+});
 
 const Blog = new mongoose.model('Blog', blogSchema);
-
 
 function addBlog({ title, author, url, likes }) {
     const blog = new Blog({ title, author, url, likes });
@@ -21,5 +19,6 @@ function getBlogs() {
 }
 
 module.exports = {
-    addBlog, getBlogs
+    addBlog,
+    getBlogs,
 };

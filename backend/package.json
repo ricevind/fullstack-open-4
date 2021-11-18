@@ -6,8 +6,11 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "lint": "eslint ./**/*.js --fix",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "eslint . --ext .js,.test.js --fix",
+    "test": "jest --verbose"
+  },
+  "jest": {
+    "testEnvironment": "node"
   },
   "repository": "git+https://github.com/ricevind/fullstack-open-4.git",
   "author": "MK",
@@ -20,11 +23,13 @@
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
+    "lodash": "^4.17.21",
     "mongoose": "^6.0.12",
     "morgan": "^1.10.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.15",
-    "eslint": "^7.2.0"
+    "eslint": "^7.2.0",
+    "jest": "^27.3.1",
+    "nodemon": "^2.0.15"
   }
 }
