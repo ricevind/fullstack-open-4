@@ -7,7 +7,13 @@ const { unknownEndpoint, handleError, logRequest } = require('./middlewares');
 const { blogsRouter, infoRouter } = require('./controllers');
 
 logger.info('Connecting o MongoDB');
-mongoose.connect(config.DATABASE_URI)
+const databaseMap = {
+    test: config.DATABASE_TEST_URI,
+    development: config.DATABASE_URI,
+    production: config.DATABASE_URI,
+};
+
+mongoose.connect(databaseMap[config.NODE_ENV])
     .then(() => logger.info('connected to MongoDB'))
     .catch((error) => logger.error(
         'error connecting to MongoDB:', error.message)
