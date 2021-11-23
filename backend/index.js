@@ -1,7 +1,9 @@
-const http = require('http');
+import  http from 'http'
 
-const app = require('./app');
-const { logger, config } = require('./utils');
+import  app from './app.js'
+
+import  logger from '#utils/logger.js'
+import  config from '#utils/config.js'
 
 const server = http.createServer(app);
 server.listen(

@@ -1,5 +1,8 @@
-const infoRouter = new require('express').Router();
-const { blogModel } = require('../models');
+import { Router } from 'express';
+
+import blogModel  from '#models/blog.js';
+
+const infoRouter = new Router();
 
 infoRouter.get('/', (_, res) => {
     blogModel.getBlogs().then(blog => {
@@ -11,4 +14,4 @@ infoRouter.get('/', (_, res) => {
     });
 });
 
-module.exports = infoRouter;
+export default infoRouter;

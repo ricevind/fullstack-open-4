@@ -1,10 +1,10 @@
-const mongoose = require('mongoose');
+import mongoose  from 'mongoose';
 
-const {blogs} = require('../fixtures');
-const {createTestApi, setDataBase}= require('../test-controller');
-const {blogModel} = require('../../models'); 
-// big oooppff: importing index that way evaluates all sub index files
-const  blogsRouter  = require('../../controllers/blog'); 
+import blogModel  from '../../models/blog.js';
+import blogsRouter  from '../../controllers/blog.js';
+
+import blogs  from '../fixtures/blogs.js';
+import {createTestApi, setDataBase} from '../test-controller.js';
 
 
 describe.only('Blog controller', () => {

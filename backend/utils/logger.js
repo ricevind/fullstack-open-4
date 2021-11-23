@@ -1,4 +1,4 @@
-const config = require('./config');
+import config from './config.js';
 
 const createConsoleOut = (method) => 
     (...params) =>
@@ -7,7 +7,4 @@ const createConsoleOut = (method) =>
 const info = createConsoleOut('log');
 const error = createConsoleOut('error');
 
-
-module.exports = {
-    info, error
-};
+export default {info, error};

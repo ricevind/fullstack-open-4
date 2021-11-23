@@ -1,4 +1,4 @@
-const logger = require('../utils/logger');
+import logger from '#utils/logger.js';
 
 function handleError(error, req, res, next) {
     logger.error(error);
@@ -15,4 +15,4 @@ function handleError(error, req, res, next) {
     next(error);
 }
 
-module.exports = handleError;
+export default handleError;

@@ -7,5 +7,8 @@
   "editor.formatOnSaveMode": "modificationsIfAvailable",
   "[javascript]": {
     "editor.defaultFormatter": "dbaeumer.vscode-eslint"
-  }
+  },
+  "cSpell.words": [
+    "middlewares"
+  ]
 }

@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import  mongoose from 'mongoose';
 
 const blogSchema = new mongoose.Schema({
     title: {type: String, required: 'Title must be provided' },
@@ -38,7 +38,7 @@ function updateBlog(id, blogUpdate) {
     );
 }
 
-module.exports = {
+export default {
     mongooseModel: Blog,
     add,
     getBlogs,

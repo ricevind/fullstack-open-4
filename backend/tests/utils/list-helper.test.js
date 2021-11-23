@@ -1,5 +1,6 @@
-const { listHelper } = require('../../utils');
-const {blogs} = require('../fixtures');
+import  listHelper  from '../../utils/list-helper.js';
+
+import blogs from '../fixtures/blogs.js';
 
 test('dummy returns one', () => {
     const blogs = [];

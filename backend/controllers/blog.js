@@ -1,7 +1,8 @@
-const Router = require('express').Router;
-const blogRouter = new Router();
+import { Router } from 'express';
 
-const { blogModel } = require('../models');
+import blogModel from '../models/blog.js';
+
+const blogRouter = new Router();
 
 blogRouter.get('/', async (_, res) => {
     const blogs = await blogModel.getBlogs();
@@ -56,4 +57,4 @@ blogRouter.patch('/:id', async (req, res, next) => {
     }
 });
 
-module.exports = blogRouter;
+export default blogRouter;
