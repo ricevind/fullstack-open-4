@@ -1,7 +1,7 @@
 import mongoose  from 'mongoose';
 
-import blogModel  from '../../models/blog.js';
-import blogsRouter  from '../../controllers/blog.js';
+import blogModel  from '#models/blog.js';
+import blogsRouter  from '#controllers/blog.js';
 
 import blogs  from '../fixtures/blogs.js';
 import {createTestApi, setDataBase} from '../test-controller.js';
