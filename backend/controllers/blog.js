@@ -1,6 +1,7 @@
 import { Router } from 'express';
 
-import blogModel from '../models/blog.js';
+import blogModel from '#models/blog.js';
+import userModel from '#models/user.js';
 
 const blogRouter = new Router();
 
@@ -9,15 +10,17 @@ blogRouter.get('/', async (_, res) => {
     res.json(blogs);
 });
 
-blogRouter.post('/', async (req, res, next) => {
+blogRouter.post('/', async (req, res) => {
     const blogCandidate = req.body;
-    try {
+        console.log('1')
+
         const blog = await blogModel.add(blogCandidate);
+        console.log('2')
+
+        await userModel.addBlogToUser({userId: blogCandidate.userId, blogId: blog.id});
         res.status(201);
         res.json(blog);
-    } catch (e) {
-        next(e);
-    }
+   
    
 });
 

@@ -1,10 +1,11 @@
-export default [
+export default (userId) =>  [
     {
         _id: '5a422a851b54a676234d17f7',
         title: 'React patterns',
         author: 'Michael Chan',
         url: 'https://reactpatterns.com/',
         likes: 7,
+       userId,
         __v: 0
     },
     {
@@ -13,6 +14,7 @@ export default [
         author: 'Edsger W. Dijkstra',
         url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
         likes: 5,
+       userId,
         __v: 0
     },
     {
@@ -21,6 +23,7 @@ export default [
         author: 'Edsger W. Dijkstra',
         url: 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html',
         likes: 12,
+       userId,
         __v: 0
     },
     {
@@ -29,6 +32,7 @@ export default [
         author: 'Robert C. Martin',
         url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll',
         likes: 10,
+       userId,
         __v: 0
     },
     {
@@ -37,6 +41,7 @@ export default [
         author: 'Robert C. Martin',
         url: 'http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html',
         likes: 0,
+       userId,
         __v: 0
     },
     {
@@ -45,6 +50,7 @@ export default [
         author: 'Robert C. Martin',
         url: 'http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html',
         likes: 2,
+       userId,
         __v: 0
     }  
 ];

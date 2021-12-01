@@ -3,8 +3,9 @@ POST http://localhost:3001/api/blog
 Content-Type: application/json
 
 {
-  "title": "A beautifull title",
+  "title": "A beautifull title 2",
   "author": "MK",
-  "url": "https://www.world.com/blog-123",
-  "likes": 1234
+  "url": "https://www.world.com/blog-1233",
+  "likes": 12,
+  "userId": "61a3aa0abc0f9b3da2b9e166"
 }

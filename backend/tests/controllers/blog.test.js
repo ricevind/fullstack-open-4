@@ -1,18 +1,38 @@
 import mongoose  from 'mongoose';
 
 import blogModel  from '#models/blog.js';
-import blogsRouter  from '#controllers/blog.js';
+import blogRouter  from '#controllers/blog.js';
+import userModel from '#models/user.js';
 
+import users  from '../fixtures/users.js';
 import blogs  from '../fixtures/blogs.js';
-import {createTestApi, setDataBase} from '../test-controller.js';
+import {createTestApi} from '../test-controller.js';
+import config from '../../utils/config.js';
 
 
-describe.only('Blog controller', () => {
+
+describe('Blog controller', () => {
     let testedController;
+    let blogsWithUserId;
+    let userId;
+
+    beforeAll(async () => {
+        await  mongoose.connect(config.DATABASE_TEST_URI);
+    }) 
 
     beforeEach( async () => {
-        await setDataBase(blogModel, blogs);
-        testedController = await createTestApi(blogsRouter);
+        await userModel.mongooseModel.deleteMany({});
+        await blogModel.mongooseModel.deleteMany({});
+
+        const user = (await userModel.add(users[0])).toJSON();
+        userId = user.id;
+        blogsWithUserId = blogs(userId);
+
+        await Promise.all(blogsWithUserId.map(blog => {
+            return blogModel.add(blog);
+        }));
+
+        testedController = createTestApi(blogRouter);
     });
 
     test('Method: Get /', async () => {
@@ -26,29 +46,38 @@ describe.only('Blog controller', () => {
     }, 10000);
 
 
+
     describe('Method: POST /', () => {
         test('creates blog', async () => {
-            const blog = {
+            const blogCandidate = {
                 title: 'Test Blog',
                 author: 'An author',
                 url: 'http://le.url.com',
+                userId,
                 likes: 9999,
             };
+
+            const expectedBlog = {
+                ...blogCandidate
+            }
+            delete expectedBlog.userId;
+
+
     
             const blogResponse = await testedController
                 .post('/')
-                .send(blog)
+                .send(blogCandidate)
                 .set('Content-Type', 'application/json')
                 .expect(201);
     
-            expect(blogResponse.body).toMatchObject(blog);
+            expect(blogResponse.body).toMatchObject(expectedBlog);
     
     
             const blogsInDb = await testedController
                 .get('/');
             
-            expect(blogsInDb.body).toHaveLength(blogs.length + 1);
-            expect(blogsInDb.body).toContainEqual(blogResponse.body);
+            expect(blogsInDb.body).toHaveLength(blogsWithUserId.length + 1);
+            expect(blogsInDb.body).toEqual(expect.arrayContaining([expect.objectContaining({...expectedBlog, id: blogResponse.body.id})]));
             
         }, 10000);
 
@@ -57,6 +86,7 @@ describe.only('Blog controller', () => {
                 title: 'Test Blog',
                 author: 'An author',
                 url: 'http://le.url.com',
+                userId,
             };
     
             const blogResponse = await testedController
@@ -68,10 +98,11 @@ describe.only('Blog controller', () => {
             expect(blogResponse.body.likes).toEqual(0);
         }, 10000);
 
-        test('validates title', async () => {
+        test.only('validates title', async () => {
             const blog = {
                 author: 'An author',
                 url: 'http://le.url.com',
+                userId,
             };
     
             await testedController
@@ -85,6 +116,7 @@ describe.only('Blog controller', () => {
             const blog = {
                 author: 'An author',
                 title: 'test title',
+                userId,
             };
     
             await testedController
