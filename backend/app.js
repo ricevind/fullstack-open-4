@@ -2,15 +2,20 @@ import express  from 'express';
 import mongoose  from 'mongoose';
 import cors  from 'cors';
 
-import logger from '#utils/logger.js'
-import config from '#utils/config.js'
+import logger from '#utils/logger.js';
+import config from '#utils/config.js';
 
-import unknownEndpoint from '#middlewares/unknown-endpoint.js'
-import handleError from '#middlewares/error-handler.js'
-import logRequest from '#middlewares/log-request.js'
+import unknownEndpoint from '#middlewares/unknown-endpoint.js';
+import handleError from '#middlewares/error-handler.js';
+import logRequest from '#middlewares/log-request.js';
+import extractToken from '#middlewares/extract-token.js';
+import authorize from '#middlewares/authorize.js';
 
-import blogsRouter from '#controllers/blog.js'
-import infoRouter from '#controllers/info.js'
+
+import createBlogRouter from '#controllers/blog.js';
+import infoRouter from '#controllers/info.js';
+import userRouter from '#controllers/user.js';
+import loginRouter from '#controllers/login.js';
 
 logger.info('Connecting o MongoDB');
 const databaseMap = {
@@ -31,10 +36,14 @@ const app = express();
 app.use(cors());
 app.use(express.static('static'));
 app.use(express.json());
+app.use(extractToken);
 app.use(logRequest);
 
-app.use('/api/blog', blogsRouter);
+app.use('/api/blog', createBlogRouter(authorize));
 app.use('/api/info', infoRouter);
+app.use('/api/user', userRouter);
+app.use('/api/login', loginRouter);
+
 
 app.use(unknownEndpoint);
 app.use(handleError);

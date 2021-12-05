@@ -1,10 +1,11 @@
 
 POST http://localhost:3001/api/blog
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJpY2V2aW5kMyIsImlkIjoiNjFhYjYzYzkwN2Y4MTU2ODFkNzM0N2EzIiwiaWF0IjoxNjM4NjI3NTQxfQ.bvCmAfmT_oLRmBPukLFE3zzNh-tB10A_z1nKX87eRs0
 
 {
-  "title": "A beautifull title",
+  "title": "test6",
   "author": "MK",
-  "url": "https://www.world.com/blog-123",
-  "likes": 1234
+  "url": "https://www.world.com/blog-1233",
+  "likes": 12
 }

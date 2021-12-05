@@ -1,6 +1,7 @@
 import { Router } from 'express';
 
-import blogModel from '../models/blog.js';
+import blogModel from '#models/blog.js';
+import userModel from '#models/user.js';
 
 const blogRouter = new Router();
 
@@ -9,52 +10,50 @@ blogRouter.get('/', async (_, res) => {
     res.json(blogs);
 });
 
-blogRouter.post('/', async (req, res, next) => {
-    const blogCandidate = req.body;
-    try {
-        const blog = await blogModel.add(blogCandidate);
-        res.status(201);
-        res.json(blog);
-    } catch (e) {
-        next(e);
+blogRouter.delete('/:id', async (req, res, ) => {
+    const blogId = req.params.id;
+    const q = await blogModel.deleteBlog(blogId);
+    if (q == null) {
+        res.statusMessage = 'Blog not found';
+        res.status(204);
+        res.send();
+        return;
     }
+
+    res.status(200);
+    res.send();
    
 });
 
-blogRouter.delete('/:id', async (req, res, next) => {
-    const blogId = req.params.id;
-    try {
-        const q = await blogModel.deleteBlog(blogId);
-        if (q == null) {
-            res.statusMessage = 'Blog not found';
-            res.status(204);
-            res.send();
-            return;
-        }
-
-        res.status(200);
-        res.send();
-    } catch (e) {
-        next(e);
-    }
-});
-
-blogRouter.patch('/:id', async (req, res, next) => {
+blogRouter.patch('/:id', async (req, res, ) => {
     const blogId = req.params.id;
     const blogUpdate = req.body;
 
-    try {
-        const updatedBlog = await blogModel.updateBlog(blogId, blogUpdate);
-        if (updatedBlog == null) {
-            res.statusMessage = 'Blog not found';
-            res.status(204);
-            res.send();
-            return;
-        }
-        res.json(updatedBlog);
-    } catch (e) {
-        next(e);
+    const updatedBlog = await blogModel.updateBlog(blogId, blogUpdate);
+    if (updatedBlog == null) {
+        res.statusMessage = 'Blog not found';
+        res.status(204);
+        res.send();
+        return;
     }
+    res.json(updatedBlog);
 });
 
-export default blogRouter;
+function createBlogRouter(authorizeMiddleware) {
+    blogRouter.post(
+        '/',
+        authorizeMiddleware,
+        async (req, res) => {
+    
+            const blogCandidate = {...req.body, userId: req.user.id};
+            const blog = await blogModel.add(blogCandidate);
+           
+            await userModel.addBlogToUser({userId: blogCandidate.userId, blogId: blog.id});
+            res.status(201);
+            res.json(blog);
+        });
+
+    return blogRouter;
+}
+
+export default createBlogRouter;

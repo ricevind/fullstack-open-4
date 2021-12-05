@@ -2,6 +2,8 @@ import  listHelper  from '../../utils/list-helper.js';
 
 import blogs from '../fixtures/blogs.js';
 
+const blogsWithUserId = blogs('foo');
+
 test('dummy returns one', () => {
     const blogs = [];
 
@@ -34,8 +36,8 @@ describe('Function: favoriteBlog', () => {
     });
 
     test('returns most liked blog', () => {
-        const {author, likes, title} = blogs[2];
-        expect(listHelper.favoriteBlog(blogs)).toEqual({author, likes, title});
+        const {author, likes, title} = blogsWithUserId[2];
+        expect(listHelper.favoriteBlog(blogsWithUserId)).toEqual({author, likes, title});
     });
 });
 
@@ -49,7 +51,7 @@ describe('Function: mostBlogs', () => {
             author: 'Robert C. Martin',
             blogs: 3
         };
-        expect(listHelper.mostBlogs(blogs)).toEqual(authorWithMostBlogs);
+        expect(listHelper.mostBlogs(blogsWithUserId)).toEqual(authorWithMostBlogs);
     });
 });
 
@@ -63,7 +65,7 @@ describe('Function: mostLikes', () => {
             author: 'Edsger W. Dijkstra',
             likes: 17
         };
-        expect(listHelper.mostLikes(blogs)).toEqual(authorWithMostLikes);
+        expect(listHelper.mostLikes(blogsWithUserId)).toEqual(authorWithMostLikes);
     });
 });
 

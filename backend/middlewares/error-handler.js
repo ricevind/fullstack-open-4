@@ -4,12 +4,23 @@ function handleError(error, req, res, next) {
     logger.error(error);
     
     if (error.name === 'CastError') {
-        return res.status(400).send({ error: error.message});
+        res.status(400);
+        res.json({ message: error.message });
+
+        return;
     }
 
     if (error.name === 'ValidationError') {
-        console.error(JSON.stringify(error, null, 2));
-        return res.status(400).send({ error: error.message });
+        res.status(400);
+        res.json({ message: error.message });
+
+        return;
+    }
+
+    if (error.name === 'JsonWebTokenError') {
+        return res.status(401).json({
+            error: 'invalid token'
+        });
     }
 
     next(error);
