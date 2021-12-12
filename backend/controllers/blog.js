@@ -10,35 +10,6 @@ blogRouter.get('/', async (_, res) => {
     res.json(blogs);
 });
 
-blogRouter.delete('/:id', async (req, res, ) => {
-    const blogId = req.params.id;
-    const q = await blogModel.deleteBlog(blogId);
-    if (q == null) {
-        res.statusMessage = 'Blog not found';
-        res.status(204);
-        res.send();
-        return;
-    }
-
-    res.status(200);
-    res.send();
-   
-});
-
-blogRouter.patch('/:id', async (req, res, ) => {
-    const blogId = req.params.id;
-    const blogUpdate = req.body;
-
-    const updatedBlog = await blogModel.updateBlog(blogId, blogUpdate);
-    if (updatedBlog == null) {
-        res.statusMessage = 'Blog not found';
-        res.status(204);
-        res.send();
-        return;
-    }
-    res.json(updatedBlog);
-});
-
 function createBlogRouter(authorizeMiddleware) {
     blogRouter.post(
         '/',
@@ -51,9 +22,46 @@ function createBlogRouter(authorizeMiddleware) {
             await userModel.addBlogToUser({userId: blogCandidate.userId, blogId: blog.id});
             res.status(201);
             res.json(blog);
+        }
+    );
+
+    blogRouter.patch(
+        '/:id',
+        authorizeMiddleware, 
+        async (req, res, ) => {
+            const blogId = req.params.id;
+            const blogUpdate = req.body;
+    
+            const updatedBlog = await blogModel.updateBlog(blogId, blogUpdate);
+            if (updatedBlog == null) {
+                res.statusMessage = 'Blog not found';
+                res.status(204);
+                res.send();
+                return;
+            }
+            res.json(updatedBlog);
         });
 
+    blogRouter.delete(
+        '/:id',
+        authorizeMiddleware, 
+        async (req, res, ) => {
+            const blogId = req.params.id;
+            const q = await blogModel.deleteBlog(blogId);
+            if (q == null) {
+                res.statusMessage = 'Blog not found';
+                res.status(204);
+                res.send();
+                return;
+            }
+        
+            res.status(200);
+            res.send();
+        });
+        
     return blogRouter;
+
+    
 }
 
 export default createBlogRouter;

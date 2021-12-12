@@ -39,7 +39,7 @@ app.use(express.json());
 app.use(extractToken);
 app.use(logRequest);
 
-app.use('/api/blog', createBlogRouter(authorize));
+app.use('/api/blogs', createBlogRouter(authorize));
 app.use('/api/info', infoRouter);
 app.use('/api/user', userRouter);
 app.use('/api/login', loginRouter);

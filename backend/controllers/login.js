@@ -1,4 +1,4 @@
-import { response, Router } from 'express';
+import {  Router } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
@@ -9,10 +9,10 @@ const loginRouter = new Router();
 
 loginRouter.post('/', async (req, resp) => {
     const {username, password} = req.body;
+    console.log(req.body);
 
     const user = await userModel.getByUsername(username);
 
-    console.log('kupa', req.body, user);
     const isPasswordCorrect = user === null 
         ? false 
         : await bcrypt.compare(password, user.passwordHash);

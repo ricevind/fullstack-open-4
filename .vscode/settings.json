@@ -6,6 +6,7 @@
   "eslint.format.enable": true,
   "editor.formatOnSaveMode": "modificationsIfAvailable",
   "cSpell.words": [
-    "middlewares"
+    "middlewares",
+    "Togglable"
   ]
 }
