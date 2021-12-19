@@ -2,10 +2,12 @@
     "private": true,
     "workspaces": [
         "frontend",
-        "backend"
+        "backend",
+        "e2e"
     ],
     "scripts": {
         "start": "yarn workspace @blog/backend start",
-        "dev": "( yarn workspace @blog/backend dev & yarn workspace @blog/frontend dev; )"
+        "dev": "( yarn workspace @blog/backend dev & yarn workspace @blog/frontend dev; )",
+        "start:test": "( yarn workspace @blog/backend start:test & yarn workspace @blog/frontend dev; )"
     }
 }

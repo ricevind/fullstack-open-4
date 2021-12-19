@@ -1,0 +1,15 @@
+{
+  "name": "@blog/e2e",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "cypress:open": "cypress open"
+  },
+  "devDependencies": {
+    "cypress": "^9.1.1",
+    "eslint": "^8.5.0",
+    "eslint-plugin-cypress": "^2.12.1"
+  }
+}

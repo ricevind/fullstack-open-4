@@ -10,6 +10,8 @@ import Notification from './components/Notification'
 const App = () => {
   const userContext = useUser()
 
+
+
   return (
     <div>
       <Notification></Notification>
@@ -20,7 +22,12 @@ const App = () => {
             <Login></Login>
           </div>
           :
-          <BlogsPage></BlogsPage>
+          <>
+            <BlogsPage></BlogsPage>
+            <button onClick={userContext.logout}>
+              Logout
+            </button>
+          </>
       }
     </div>
   )

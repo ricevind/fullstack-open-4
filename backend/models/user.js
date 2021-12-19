@@ -58,11 +58,16 @@ async function getById(id) {
     return User.findById(id);
 }
 
+function deleteAll() {
+    return User.deleteMany({});
+}
+
 export default {
     mongooseModel: User,
     all,
     addBlogToUser,
     getByUsername,
     add,
-    getById
+    getById,
+    deleteAll
 };

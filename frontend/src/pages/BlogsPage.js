@@ -7,7 +7,7 @@ import { useUser } from '../state/UserProvider'
 import { useNotification } from '../state/NotificationProvider'
 
 const sortBlogsByLikes = (blogs) => {
-  return  [... blogs.sort((a, b) => a.likes - b.likes)]
+  return  [... blogs.sort((a, b) => b.likes - a.likes)]
 }
 
 const BlogsPage = () => {

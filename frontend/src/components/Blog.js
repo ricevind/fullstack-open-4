@@ -11,27 +11,50 @@ const Blog = ({ blog, likeOne, deleteOne }) => {
     }
   }
 
-  return showDetails ?
-    <div>
-      <p>
-        {blog.title}
-        <button onClick={() => setShowDetails(false)}>Hide details</button>
+  const detailsButtonLabel = showDetails ? 'Hide details' : 'Show details'
+  const toggleDetails = () => {
+    setShowDetails(showDetails => !showDetails)
+  }
+
+  const toggleDetailsButton = <button
+    id="toggleBlogDetails"
+    aria-live='polite'
+    aria-controls='blogDetails'
+    onClick={toggleDetails}>{detailsButtonLabel}
+  </button>
+
+  return  (
+    <div role="region" aria-label='blog info'>
+      <p aria-label='blog author'>
+        {blog.author}
       </p>
-      <p>{blog.author}</p>
-      <p>likes : {blog.likes} <button onClick={() => likeOne(blog)}>Like</button></p>
-      <div>
-        <button onClick={deleteFn}>Delete</button>
+      <p aria-label='blog title'>
+        {blog.title}
+      </p>
+      {toggleDetailsButton}
+
+      <div
+        aria-labelledby='toggleBlogDetails'
+        aria-expanded={showDetails}
+        id="blogDetails"
+      >
+        {
+          showDetails && (
+            <>
+              <p>
+              likes : <span aria-label='blog likes'>{blog.likes}</span>
+              </p>
+              <p>
+              url : <a href={blog.url}>Blog URL</a>
+              </p>
+              <button aria-label='delete blog' onClick={deleteFn}>Delete</button>
+              <button aria-label='like blog' onClick={() => likeOne(blog)}>Like</button>
+            </>
+          )
+        }
       </div>
+    </div>)
 
-
-    </div>
-    :
-    <div>
-      <p>
-        {blog.title}
-        <button onClick={() => setShowDetails(true)}>Show details</button>
-      </p>
-    </div>
 
 }
 

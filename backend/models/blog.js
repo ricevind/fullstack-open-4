@@ -36,6 +36,10 @@ function deleteBlog(id) {
     return Blog.findByIdAndDelete(id);
 }
 
+function deleteAll() {
+    return Blog.deleteMany({});
+}
+
 function updateBlog(id, blogUpdate) {
     return Blog.findByIdAndUpdate(
         id, 
@@ -49,5 +53,6 @@ export default {
     add,
     getBlogs,
     deleteBlog,
-    updateBlog
+    updateBlog,
+    deleteAll
 };

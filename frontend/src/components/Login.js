@@ -83,7 +83,7 @@ const useLogin = () => {
 const Login = () => {
   const { state, dispatch, login } = useLogin()
   const userContext = useUser()
-  const { setNotification, setErrorNotification } = useNotification()
+  const {  setSuccessNotification, setErrorNotification } = useNotification()
 
   const onUsernameChange = (event) => {
     dispatch({
@@ -109,7 +109,7 @@ const Login = () => {
       login()
         .then(user => {
           userContext.setUser(user)
-          setNotification(`${user.name} has logged in`)
+          setSuccessNotification(`${user.name} has logged in`)
         })
         .catch(error => setErrorNotification(`${error.message}`))
     }

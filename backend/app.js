@@ -16,6 +16,7 @@ import createBlogRouter from '#controllers/blog.js';
 import infoRouter from '#controllers/info.js';
 import userRouter from '#controllers/user.js';
 import loginRouter from '#controllers/login.js';
+import resetRouter from '#controllers/reset.js';
 
 logger.info('Connecting o MongoDB');
 const databaseMap = {
@@ -39,6 +40,10 @@ app.use(express.json());
 app.use(extractToken);
 app.use(logRequest);
 
+if (config.NODE_ENV === 'test') {
+    console.log('hello reset');
+    app.use('/api/testing/reset', resetRouter);
+}
 app.use('/api/blogs', createBlogRouter(authorize));
 app.use('/api/info', infoRouter);
 app.use('/api/user', userRouter);
