@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@reduxjs/toolkit": "^1.7.1",
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",
     "@testing-library/user-event": "^12.6.3",
@@ -36,6 +37,7 @@
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.2",
     "eslint": "^8.4.1",
+    "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-jest": "^25.3.0",
     "eslint-plugin-react": "^7.27.1"
   }

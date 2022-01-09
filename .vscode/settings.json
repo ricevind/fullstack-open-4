@@ -1,11 +1,7 @@
 {
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
-  },
-  "eslint.validate": ["javascript"],
-  "eslint.format.enable": true,
   "editor.formatOnSaveMode": "modificationsIfAvailable",
   "cSpell.words": [
+    "eqeqeq",
     "middlewares",
     "Togglable"
   ]
