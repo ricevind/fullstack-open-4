@@ -9,6 +9,7 @@ module.exports = {
     "eslint:recommended",
     "plugin:react/recommended",
     "plugin:jest/recommended",
+    "plugin:@typescript-eslint/recommended",
     "prettier",
   ],
   parserOptions: {
@@ -20,7 +21,6 @@ module.exports = {
   },
   plugins: ["react", "jest"],
   rules: {
-    indent: ["error", 2],
     "linebreak-style": ["error", "unix"],
     eqeqeq: "error",
     "no-trailing-spaces": "error",
