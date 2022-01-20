@@ -1,15 +1,13 @@
 import React from "react";
 import BlogsPage from "./pages/BlogsPage";
 import Login from "./components/Login";
-import { useInitUser, useLogout, useAuthState } from "./state/UserProvider";
-import { NotificationProvider } from "./state/NotificationProvider";
+import { useLogout, useAuthState } from "./state/auth.store";
 import { Provider } from "react-redux";
 
 import Notification from "./components/Notification";
 import { store } from "./state/store";
 
 const App = () => {
-  useInitUser();
   const user = useAuthState();
   const logout = useLogout();
 
@@ -18,7 +16,7 @@ const App = () => {
       <Notification></Notification>
       {
         // eslint-disable-next-line eqeqeq
-        user == null ? (
+        user.user == null ? (
           <div>
             <Login></Login>
           </div>
@@ -35,9 +33,7 @@ const App = () => {
 
 const AppWithProviders = () => (
   <Provider store={store}>
-    <NotificationProvider>
-      <App></App>
-    </NotificationProvider>
+    <App></App>
   </Provider>
 );
 

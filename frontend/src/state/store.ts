@@ -1,16 +1,20 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/dist/query";
+import { blogsApi } from "../services/blogs";
 
 import { userApi } from "../services/login";
-import { authSlice } from "./UserProvider";
+import { authSlice } from "./auth.store";
+import { notificationsSlice } from "./notifications.store";
 
 export const store = configureStore({
   reducer: {
     [userApi.reducerPath]: userApi.reducer,
-    auth: authSlice.reducer,
+    [notificationsSlice.name]: notificationsSlice.reducer,
+    [authSlice.name]: authSlice.reducer,
+    [blogsApi.reducerPath]: blogsApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(userApi.middleware),
+    getDefaultMiddleware().concat(userApi.middleware, blogsApi.middleware),
 });
 
 setupListeners(store.dispatch);

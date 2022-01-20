@@ -1,100 +1,91 @@
-import React, { useState, useEffect, useRef } from 'react'
-import blogService from '../services/blogs'
-import Blog from '../components/Blog'
-import Togglable from '../components/Togglable'
-import BlogEditor from '../components/BlogEditor'
-import { useAuthState } from "../state/UserProvider";
-import { useNotification } from "../state/NotificationProvider";
+import React, { useRef, useState } from "react";
+import { blogsApi } from "../services/blogs";
+import Blog from "../components/Blog";
+import Togglable from "../components/Togglable";
+import BlogEditor from "../components/BlogEditor";
+import { useNotification } from "../state/notifications.store";
 
 const sortBlogsByLikes = (blogs) => {
-  return [...blogs.sort((a, b) => b.likes - a.likes)];
+  const copy = [...blogs];
+  copy.sort((a, b) => b.likes - a.likes);
+  return copy;
 };
 
 const BlogsPage = () => {
-  const [blogs, setBlogs] = useState([]);
+  const [areSortByLikes, setAreSortByLikes] = useState(false);
   const editorToggleRef = useRef();
-  const areSortByLikes = useRef(false);
-  const { token } = useAuthState();
-  const { setSuccessNotification, setErrorNotification } = useNotification();
 
-  useEffect(() => {
-    refreshBlogs();
-  }, []);
+  const { data: blogs, isSuccess } = blogsApi.useGetQuery();
 
-  const refreshBlogs = () => {
-    blogService
-      .getAll()
-      .then((blogs) =>
-        setBlogs(areSortByLikes.current ? sortBlogsByLikes : blogs)
-      );
-  };
+  const sortedBlogs = areSortByLikes ? sortBlogsByLikes(blogs) : blogs;
+
+  const [updateOne] = blogsApi.useUpdateMutation();
+  const [deleteOne] = blogsApi.useDeleteMutation();
+
+  const showNotification = useNotification();
 
   const onCreateSuccess = () => {
     editorToggleRef.current.close();
-    refreshBlogs();
   };
 
   const likeOne = (blog) => {
-    blogService
-      .patchOne({
-        blogId: blog.id,
-        update: {
-          likes: blog.likes + 1,
-        },
-        token,
-      })
+    updateOne({
+      likes: blog.likes + 1,
+      id: blog.id,
+    })
+      .unwrap()
       .then((blog) => {
-        setBlogs((blogs) => {
-          return blogs.map((cachedBlog) =>
-            cachedBlog.id === blog.id ? blog : cachedBlog
-          );
+        showNotification({
+          message: `Blog ${blog.title} likes increased`,
+          type: "success",
         });
-        setSuccessNotification(`Blog ${blog.title} likes increased`);
       })
-      .catch((error) => setErrorNotification(error.message));
+      .catch((error) => showNotification(error.message));
   };
 
-  const deleteOne = (blog) => {
-    blogService
-      .deleteOne({
-        blogId: blog.id,
-        token,
-      })
+  const deleteOneWithNotification = (blog) => {
+    deleteOne({
+      id: blog.id,
+    })
+      .unwrap()
       .then(() => {
-        setBlogs((blogs) => {
-          return blogs.filter((cachedBlog) => cachedBlog.id !== blog.id);
+        showNotification({
+          message: `Blog ${blog.title} was deleted`,
+          type: "success",
         });
-        setSuccessNotification(`Blog ${blog.title} was deleted`);
       })
-      .catch((error) => setErrorNotification(error.message));
+      .catch((error) => showNotification(error.message));
   };
 
   const sortByLikes = () => {
-    setBlogs(sortBlogsByLikes);
-    areSortByLikes.current = true;
+    setAreSortByLikes((prev) => !prev);
   };
 
-  return (
-    <div>
-      <h2>
-        blogs
-        <button onClick={sortByLikes}>Sort by likes</button>
-      </h2>
-      {blogs.map((blog) => (
-        <Blog
-          key={blog.id}
-          blog={blog}
-          likeOne={likeOne}
-          deleteOne={deleteOne}
-        />
-      ))}
+  if (isSuccess) {
+    return (
+      <div>
+        <h2>
+          blogs
+          <button onClick={sortByLikes}>Sort by likes</button>
+        </h2>
+        {sortedBlogs.map((blog) => (
+          <Blog
+            key={blog.id}
+            blog={blog}
+            likeOne={likeOne}
+            deleteOne={deleteOneWithNotification}
+          />
+        ))}
 
-      <h2>create new</h2>
-      <Togglable action="Add blog" ref={editorToggleRef}>
-        <BlogEditor onCreateSuccess={onCreateSuccess}></BlogEditor>
-      </Togglable>
-    </div>
-  );
+        <h2>create new</h2>
+        <Togglable action="Add blog" ref={editorToggleRef}>
+          <BlogEditor onCreateSuccess={onCreateSuccess}></BlogEditor>
+        </Togglable>
+      </div>
+    );
+  }
+
+  return <div>Loading</div>;
 };
 
-export default BlogsPage
+export default BlogsPage;

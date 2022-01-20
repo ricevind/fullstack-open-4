@@ -1,6 +1,7 @@
-import React, { useEffect } from "react";
+import React from "react";
+import { useSelector } from "react-redux";
 
-import { useNotification } from "../state/NotificationProvider";
+import { selectNotifications } from "../state/notifications.store";
 
 const notificationColorMap = {
   success: {
@@ -14,34 +15,31 @@ const notificationColorMap = {
 } as any;
 
 const Notification = () => {
-  const { notification, clearNotification } = useNotification();
+  const notifications = useSelector(selectNotifications);
 
-  useEffect(() => {
-    if (notification) {
-      const timeOutId = setTimeout(() => {
-        clearNotification(undefined);
-      }, notification.duration);
+  return (
+    <div style={{ position: "fixed", top: "0", right: "0" }}>
+      {notifications.map((notification) => (
+        <div
+          key={notification.id}
+          style={{
+            display: "inline-block",
 
-      return () => clearTimeout(timeOutId);
-    }
-  }, [notification]);
-
-  return notification ? (
-    <div
-      style={{
-        display: "inline-block",
-        position: "fixed",
-        top: "0",
-        right: "0",
-        textAlign: "right",
-        padding: "10px",
-        border: `2px solid ${notificationColorMap[notification.type]?.border}`,
-        background: `${notificationColorMap[notification.type]?.background}`,
-      }}
-    >
-      {notification.message}
+            textAlign: "right",
+            padding: "10px",
+            border: `2px solid ${
+              notificationColorMap[notification.type]?.border
+            }`,
+            background: `${
+              notificationColorMap[notification.type]?.background
+            }`,
+          }}
+        >
+          {notification.message}
+        </div>
+      ))}
     </div>
-  ) : null;
+  );
 };
 
 export default Notification;

@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 
-import blogsService from "../services/blogs";
-import { useAuthState } from "../state/UserProvider";
-import { useNotification } from "../state/NotificationProvider";
+import { blogsApi } from "../services/blogs";
+import { useNotification } from "../state/notifications.store";
 
 const validateBlogForm = () => true;
 const initialEditorState = {
@@ -14,8 +13,8 @@ const initialEditorState = {
 
 const BlogEditor = ({ onCreateSuccess }: any) => {
   const [blogForm, setBlogForm] = useState(initialEditorState);
-  const user = useAuthState();
-  const { setSuccessNotification, setErrorNotification } = useNotification();
+  const showNotification = useNotification();
+  const [createBlog] = blogsApi.useCreateMutation();
 
   const onChange = (prop: any) => (event: any) => {
     event.preventDefault();
@@ -28,14 +27,22 @@ const BlogEditor = ({ onCreateSuccess }: any) => {
     event.preventDefault();
 
     if (validateBlogForm()) {
-      blogsService
-        .createOne({ ...blogForm, token: user?.token })
+      createBlog({ ...blogForm })
+        .unwrap()
         .then((blog) => {
           setBlogForm(initialEditorState);
           onCreateSuccess();
-          setSuccessNotification(`${blog.title} has been created`);
+          showNotification({
+            message: `${blog.title} has been created`,
+            type: "success",
+          });
         })
-        .catch((error) => setErrorNotification(`${error.message}`));
+        .catch((error) =>
+          showNotification({
+            message: `${error.message}`,
+            type: "success",
+          })
+        );
     }
   };
 

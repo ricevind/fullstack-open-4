@@ -2,8 +2,8 @@ import React from 'react'
 import {  fireEvent, waitFor, } from '@testing-library/react'
 import BlogEditor from './BlogEditor'
 import { createRendererWithProviders } from '../utils/test/notification-provider.test-util'
-import { UserContext } from '../state/UserProvider'
-import { NotificationContext } from '../state/NotificationProvider'
+import { UserContext } from "../state/auth.store";
+import { NotificationContext } from "../state/notifications.store";
 import blogsService from '../services/blogs'
 
 jest.mock('../services/blogs')

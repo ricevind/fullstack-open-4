@@ -1,11 +1,12 @@
 import { useLayoutEffect } from "react";
 import { useLoginMutation, userApi } from "../services/login";
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction, SerializedError } from "@reduxjs/toolkit";
 import { useSelector, useDispatch } from "react-redux";
 import { Credentials, User } from "../models/user";
 import { AppState } from "./store";
+import { FetchBaseQueryError, QueryStatus } from "@reduxjs/toolkit/dist/query";
 
-export const useAuthState = () => {
+export const useAuthState = (): AuthState => {
   const auth = useSelector((state: AppState) => state.auth);
 
   return auth;
@@ -22,7 +23,7 @@ function retrieveCachedUser(): User | undefined {
   return serializedUser && JSON.parse(serializedUser);
 }
 
-export const useInitUser = () => {
+const useInitUser = (): void => {
   const dispatch = useDispatch();
   useLayoutEffect(() => {
     const cachedUser = retrieveCachedUser();
@@ -36,11 +37,22 @@ export const useInitUser = () => {
     }
   }, []);
 };
-console.log(useLoginMutation);
 
-export const useLogin = () => {
-  const [login] = useLoginMutation();
+export const useLogin = (): [
+  (credentials: Credentials) => Promise<User>,
+  {
+    error?: FetchBaseQueryError | SerializedError;
+    status: QueryStatus;
+    isError: boolean;
+    isSuccess: boolean;
+    isLoading: boolean;
+    isUninitialized: boolean;
+    reset: () => void;
+  }
+] => {
+  useInitUser();
 
+  const [login, loginState] = useLoginMutation();
   const loginWrapper = (credentials: Credentials) => {
     return login(credentials)
       .unwrap()
@@ -53,10 +65,10 @@ export const useLogin = () => {
       });
   };
 
-  return loginWrapper;
+  return [loginWrapper, loginState];
 };
 
-export const useLogout = () => {
+export const useLogout = (): (() => void) => {
   const dispatch = useDispatch();
 
   const logout = () => {
@@ -81,7 +93,6 @@ type AuthState = {
   token: string | null;
 };
 
-console.log(userApi.endpoints);
 export const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -89,15 +100,22 @@ export const authSlice = createSlice({
     logout: () => initialState,
     setUserAndToken: (
       state,
-      {
-        payload: { user, token },
-      }: PayloadAction<{ user: User | null; token: string | null }>
+      { payload: { user, token } }: PayloadAction<AuthState>
     ) => {
       state.token = token;
       state.user = user;
     },
   },
+  extraReducers: (builder) =>
+    builder.addMatcher(
+      userApi.endpoints.login.matchFulfilled,
+      (state, action) => {
+        const user = action.payload;
+        state.token = user.token;
+        state.user = user;
+      }
+    ),
 });
 
-export const selectUser = (state: AppState) => state.auth.user;
-export const selectToken = (state: AppState) => state.auth.token;
+export const selectUser = (state: AppState): User | null => state.auth.user;
+export const selectToken = (state: AppState): string | null => state.auth.token;

@@ -3,6 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { Credentials, User } from "../models/user";
 
 export const userApi = createApi({
+  reducerPath: "user",
   baseQuery: fetchBaseQuery({ baseUrl: `${config.API_HOST}/api/` }),
   endpoints: (builder) => ({
     login: builder.mutation<User, Credentials>({
@@ -14,5 +15,5 @@ export const userApi = createApi({
     }),
   }),
 });
-console.log(userApi);
+
 export const { useLoginMutation } = userApi;

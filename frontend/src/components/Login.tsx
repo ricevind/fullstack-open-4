@@ -1,100 +1,19 @@
-import React, {
-  EventHandler,
-  FormEvent,
-  Reducer,
-  useCallback,
-  useEffect,
-  useReducer,
-} from "react";
-import { useLogin } from "../state/UserProvider";
-import { useNotification } from "../state/NotificationProvider";
+import React, { FormEvent, useEffect, useState } from "react";
+import { useLogin } from "../state/auth.store";
+import { useNotification } from "../state/notifications.store";
 import { TimeoutId } from "@reduxjs/toolkit/dist/query/core/buildMiddleware/types";
-import { Credentials } from "../models/user";
-
-const initialState = {
-  username: "",
-  password: "",
-  status: "idle",
-  error: undefined,
-};
-
-type LoginState = {
-  username: string;
-  password: string;
-  status: string;
-  error?: string;
-};
-
-const loginReducer: Reducer<
-  LoginState,
-  {
-    type: string;
-    params: Partial<Credentials & { status: string; error: string }>;
-  }
-> = (state, action) => {
-  const { type, params } = action;
-
-  switch (type) {
-    case "setUsername":
-      return { ...state, username: params.username! };
-    case "setPassword":
-      return { ...state, password: params.password! };
-    case "setCredentials":
-      return {
-        ...state,
-        password: params.password!,
-        username: params.username!,
-      };
-    case "setStatus":
-      return { ...state, status: params.status! };
-    case "setError":
-      return { ...state, status: "error", error: params.error! };
-    default:
-      throw new Error("unknown action fro login reducer");
-  }
-};
 
 const useLoginCmpLogic = () => {
-  const [state, dispatch] = useReducer(loginReducer, initialState);
-  const loginApi = useLogin();
-  const login = useCallback(() => {
-    dispatch({
-      type: "setStatus",
-      params: { status: "loading" },
-    });
-    return loginApi(state)
-      .then((data) => {
-        dispatch({
-          type: "setStatus",
-          params: { status: "loaded" },
-        });
-        dispatch({
-          type: "setCredentials",
-          params: { username: "", password: "" },
-        });
-
-        return data;
-      })
-      .catch((error) => {
-        dispatch({
-          type: "setError",
-          params: { error },
-        });
-        throw error;
-      });
-  }, []);
+  const [loginFormState, setLoginFormState] = useState<{
+    username: string;
+    password: string;
+  }>({ username: "", password: "" });
+  const [login, loginStatus] = useLogin();
 
   useEffect(() => {
     let timeoutId: TimeoutId;
-    if (state.status === "error" || state.status === "loaded") {
-      timeoutId = setTimeout(
-        () =>
-          dispatch({
-            type: "setStatus",
-            params: { status: "idle" },
-          }),
-        3000
-      );
+    if (loginStatus.isError || loginStatus.isSuccess) {
+      timeoutId = setTimeout(() => loginStatus.reset(), 3000);
     }
 
     return () => {
@@ -102,55 +21,60 @@ const useLoginCmpLogic = () => {
         clearTimeout(timeoutId);
       }
     };
-  }, [state.status]);
+  }, [loginStatus.status]);
 
-  return { state, dispatch, login };
+  return { login, loginFormState, loginStatus, setLoginFormState };
 };
 
-const Login = () => {
-  const { state, dispatch, login } = useLoginCmpLogic();
-  const { setSuccessNotification, setErrorNotification } = useNotification();
+const Login = (): JSX.Element => {
+  const { loginFormState, loginStatus, login, setLoginFormState } =
+    useLoginCmpLogic();
+  const showNotification = useNotification();
 
   const onUsernameChange = (event: FormEvent<HTMLInputElement>) => {
-    dispatch({
-      type: "setUsername",
-      params: {
-        username: event.currentTarget.value,
-      },
-    });
+    const username = event.currentTarget.value;
+    setLoginFormState((currState) => ({
+      ...currState,
+      username,
+    }));
   };
 
   const onPasswordChange = (event: FormEvent<HTMLInputElement>) => {
-    // eslint-disable-next-line no-debugger
-    debugger;
-    dispatch({
-      type: "setPassword",
-      params: {
-        password: event.currentTarget.value,
-      },
-    });
+    const password = event.currentTarget.value;
+    setLoginFormState((currState) => ({
+      ...currState,
+      password,
+    }));
   };
 
   const onLogin = (event: FormEvent) => {
     event.preventDefault();
-    if (state.status === "idle") {
-      login()
+    if (loginStatus.isUninitialized) {
+      login(loginFormState)
         .then((user) => {
-          setSuccessNotification(`${user.name} has logged in`);
+          showNotification({
+            message: `${user.name} has logged in`,
+            type: "success",
+          });
         })
-        .catch((error) => setErrorNotification(`${error.message}`));
+        .catch((error) =>
+          showNotification({
+            message: `${error.message}`,
+            type: "failure",
+          })
+        );
     }
   };
 
   return (
     <form onSubmit={onLogin}>
-      <h1>{state.status}</h1>
+      <h1>{loginStatus.status}</h1>
       <div className="form-element">
         <label htmlFor="username">UserName:</label>
         <input
           id="username"
           name="username"
-          value={state.username}
+          value={loginFormState.username}
           onChange={onUsernameChange}
         ></input>
       </div>
@@ -159,12 +83,12 @@ const Login = () => {
         <input
           id="password"
           name="password"
-          value={state.password}
+          value={loginFormState.password}
           onChange={onPasswordChange}
         ></input>
       </div>
       <button type="submit">
-        {state.status === "idle" ? "Login" : "Wait"}
+        {loginStatus.isUninitialized ? "Login" : "Wait"}
       </button>
     </form>
   );
