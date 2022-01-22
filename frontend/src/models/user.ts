@@ -3,6 +3,7 @@ export type User = {
   username: string;
   id: string;
   token: string;
+  blogsCount: number;
 };
 
 export type Credentials = {

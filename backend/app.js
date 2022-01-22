@@ -14,39 +14,39 @@ import authorize from '#middlewares/authorize.js';
 
 import createBlogRouter from '#controllers/blog.js';
 import infoRouter from '#controllers/info.js';
-import userRouter from '#controllers/user.js';
-import loginRouter from '#controllers/login.js';
-import resetRouter from '#controllers/reset.js';
+import createUserRouter from "#controllers/user.js";
+import loginRouter from "#controllers/login.js";
+import resetRouter from "#controllers/reset.js";
 
-logger.info('Connecting o MongoDB');
+logger.info("Connecting o MongoDB");
 const databaseMap = {
-    test: config.DATABASE_TEST_URI,
-    development: config.DATABASE_URI,
-    production: config.DATABASE_URI,
+  test: config.DATABASE_TEST_URI,
+  development: config.DATABASE_URI,
+  production: config.DATABASE_URI,
 };
 
 mongoose
-    .connect(databaseMap[config.NODE_ENV])
-    .then(() => logger.info('connected to MongoDB'))
-    .catch((error) =>
-        logger.error('error connecting to MongoDB:', error.message)
-    );
+  .connect(databaseMap[config.NODE_ENV])
+  .then(() => logger.info("connected to MongoDB"))
+  .catch((error) =>
+    logger.error("error connecting to MongoDB:", error.message)
+  );
 
 const app = express();
 
 app.use(cors());
-app.use(express.static('static'));
+app.use(express.static("static"));
 app.use(express.json());
 app.use(extractToken);
 app.use(logRequest);
 
-if (config.NODE_ENV === 'test') {
-    console.log('hello reset');
-    app.use('/api/testing/reset', resetRouter);
+if (config.NODE_ENV === "test") {
+  console.log("hello reset");
+  app.use("/api/testing/reset", resetRouter);
 }
-app.use('/api/blogs', createBlogRouter(authorize));
-app.use('/api/info', infoRouter);
-app.use('/api/user', userRouter);
+app.use("/api/blogs", createBlogRouter(authorize));
+app.use("/api/info", infoRouter);
+app.use("/api/users", createUserRouter(authorize));
 app.use('/api/login', loginRouter);
 
 

@@ -2,13 +2,26 @@ import React, { FormEvent, useEffect, useState } from "react";
 import { useLogin } from "../state/auth.store";
 import { useNotification } from "../state/notifications.store";
 import { TimeoutId } from "@reduxjs/toolkit/dist/query/core/buildMiddleware/types";
+import { useLocation, useNavigate } from "react-router-dom";
+
+const useNavigateToPrevious = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const state = (location.state || {}) as { from?: Location };
+  const previousPath = state?.from?.pathname || "/";
+
+  return () => navigate(previousPath, { replace: true });
+};
 
 const useLoginCmpLogic = () => {
   const [loginFormState, setLoginFormState] = useState<{
     username: string;
     password: string;
   }>({ username: "", password: "" });
-  const [login, loginStatus] = useLogin();
+  const navigateToPrevious = useNavigateToPrevious();
+
+  const [login, loginStatus] = useLogin(navigateToPrevious);
 
   useEffect(() => {
     let timeoutId: TimeoutId;

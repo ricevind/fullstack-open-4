@@ -1,4 +1,4 @@
-import { useLayoutEffect } from "react";
+import { useLayoutEffect, useState } from "react";
 import { useLoginMutation, userApi } from "../services/login";
 import { createSlice, PayloadAction, SerializedError } from "@reduxjs/toolkit";
 import { useSelector, useDispatch } from "react-redux";
@@ -23,7 +23,8 @@ function retrieveCachedUser(): User | undefined {
   return serializedUser && JSON.parse(serializedUser);
 }
 
-const useInitUser = (): void => {
+export const useInitUser = () => {
+  const [done, setDone] = useState(false);
   const dispatch = useDispatch();
   useLayoutEffect(() => {
     const cachedUser = retrieveCachedUser();
@@ -35,10 +36,15 @@ const useInitUser = (): void => {
         })
       );
     }
+    setDone(true);
   }, []);
+
+  return done;
 };
 
-export const useLogin = (): [
+export const useLogin = (
+  callback?: () => void
+): [
   (credentials: Credentials) => Promise<User>,
   {
     error?: FetchBaseQueryError | SerializedError;
@@ -50,8 +56,6 @@ export const useLogin = (): [
     reset: () => void;
   }
 ] => {
-  useInitUser();
-
   const [login, loginState] = useLoginMutation();
   const loginWrapper = (credentials: Credentials) => {
     return login(credentials)
@@ -59,6 +63,7 @@ export const useLogin = (): [
       .then((user) => {
         if (user) {
           cacheUserInLocalStorage(user);
+          callback && callback();
         }
 
         return user;
@@ -68,17 +73,13 @@ export const useLogin = (): [
   return [loginWrapper, loginState];
 };
 
-export const useLogout = (): (() => void) => {
+export const useLogout = (callback?: () => void): (() => void) => {
   const dispatch = useDispatch();
 
   const logout = () => {
-    dispatch(
-      authSlice.actions.setUserAndToken({
-        user: null,
-        token: null,
-      })
-    );
+    dispatch({ type: "app/logout" });
     localStorage.removeItem(USER_KEY);
+    callback && callback();
   };
   return logout;
 };
