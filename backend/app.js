@@ -12,8 +12,9 @@ import extractToken from '#middlewares/extract-token.js';
 import authorize from '#middlewares/authorize.js';
 
 
-import createBlogRouter from '#controllers/blog.js';
-import infoRouter from '#controllers/info.js';
+import createBlogRouter from "#controllers/blog.js";
+import createCommentRouter from "#controllers/comment.js";
+import infoRouter from "#controllers/info.js";
 import createUserRouter from "#controllers/user.js";
 import loginRouter from "#controllers/login.js";
 import resetRouter from "#controllers/reset.js";
@@ -45,6 +46,7 @@ if (config.NODE_ENV === "test") {
   app.use("/api/testing/reset", resetRouter);
 }
 app.use("/api/blogs", createBlogRouter(authorize));
+app.use("/api/blogs", createCommentRouter(authorize));
 app.use("/api/info", infoRouter);
 app.use("/api/users", createUserRouter(authorize));
 app.use('/api/login', loginRouter);

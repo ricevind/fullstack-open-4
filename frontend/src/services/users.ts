@@ -19,7 +19,7 @@ export const usersApi = createApi({
     users: builder.query<User[], void>({
       query: () => ({ url: "users", method: "GET" }),
       transformResponse: (users: any) =>
-        users.map((user: any) => ({
+        users.map((user: User) => ({
           ...user,
           blogsCount: user.blogs.length,
         })),
@@ -27,3 +27,4 @@ export const usersApi = createApi({
     }),
   }),
 });
+

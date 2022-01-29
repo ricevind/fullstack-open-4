@@ -1,19 +1,12 @@
 import React from "react";
-import { useAuthState, useLogout } from "../state/auth.store";
 import { usersApi } from "../services/users";
+import { Link } from "react-router-dom";
 
-export const UsersPage = () => {
-  const logout = useLogout();
-  const { user } = useAuthState();
+export const UsersPage = (): JSX.Element => {
   const { data = [] } = usersApi.useUsersQuery();
 
   return (
     <div>
-      <div>
-        <p>User logged in</p>
-        <pre>{JSON.stringify(user, null, 2)}</pre>
-        <button onClick={logout}>Logout</button>
-      </div>
       <div>
         <h2>Users</h2>
         <table>
@@ -26,7 +19,10 @@ export const UsersPage = () => {
           <tbody>
             {data.map((user) => (
               <tr key={user.id}>
-                <td>{user.name}</td>
+                <td>
+                  {" "}
+                  <Link to={`/users/${user?.id}`}>{user.name}</Link>
+                </td>
                 <td>{user.blogsCount}</td>
               </tr>
             ))}

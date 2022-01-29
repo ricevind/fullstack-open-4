@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 const Blog = ({ blog, likeOne, deleteOne }: any) => {
   const [showDetails, setShowDetails] = useState(false);
@@ -40,6 +41,12 @@ const Blog = ({ blog, likeOne, deleteOne }: any) => {
       >
         {showDetails && (
           <>
+            <p>
+              Title :{" "}
+              <span aria-label="blog name">
+                <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
+              </span>
+            </p>
             <p>
               likes : <span aria-label="blog likes">{blog.likes}</span>
             </p>

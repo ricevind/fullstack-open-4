@@ -8,7 +8,6 @@ import Notification from "./components/Notification";
 import { store } from "./state/store";
 import {
   BrowserRouter,
-  Link,
   Navigate,
   Route,
   Routes,
@@ -16,6 +15,9 @@ import {
   useNavigate,
 } from "react-router-dom";
 import { UsersPage } from "./pages/UsersPage";
+import { UserPage } from "./pages/UserPage";
+import { BlogPage } from "./pages/BlogPage";
+import { Navigation } from "./components/Navigation";
 
 const RequiredRoute = ({ children }: { children: ReactNode }) => {
   const { user } = useAuthState();
@@ -39,33 +41,40 @@ const App = () => {
   return done ? (
     <div>
       <Notification></Notification>
-      <>
-        <nav>
-          <ul>
-            <li>
-              <Link to="blogs">Blogs</Link>
-            </li>
-            <li>
-              <Link to="users">Users</Link>
-            </li>
-          </ul>
-        </nav>
-        <Routes>
-          <Route path="login" element={<Login></Login>}></Route>
-          <Route path="blogs" element={<BlogsPage></BlogsPage>}></Route>
-          <Route
-            path="users"
-            element={
-              <RequiredRoute>
-                <UsersPage></UsersPage>
-              </RequiredRoute>
-            }
-          ></Route>
-          <Route path="*" element={<Navigate to="blogs" />} />
-        </Routes>
-      </>
+      <Navigation></Navigation>
+      <Routes>
+        <Route path="login" element={<Login></Login>}></Route>
+        <Route path="blogs" element={<BlogsPage></BlogsPage>}></Route>
+        <Route
+          path="users"
+          element={
+            <RequiredRoute>
+              <UsersPage></UsersPage>
+            </RequiredRoute>
+          }
+        ></Route>
+        <Route
+          path="users/:userId"
+          element={
+            <RequiredRoute>
+              <UserPage></UserPage>
+            </RequiredRoute>
+          }
+        ></Route>
+        <Route
+          path="blogs/:blogId"
+          element={
+            <RequiredRoute>
+              <BlogPage></BlogPage>
+            </RequiredRoute>
+          }
+        ></Route>
+        <Route path="*" element={<Navigate to="blogs" />} />
+      </Routes>
     </div>
-  ) : null;
+  ) : (
+    <></>
+  );
 };
 
 const AppWithProviders = (): JSX.Element => (
