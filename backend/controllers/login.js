@@ -31,7 +31,7 @@ loginRouter.post('/', async (req, resp) => {
     const token = jwt.sign(tokenConfig, config.SECRET);
 
     resp.status(200);
-    resp.send({token, username, name: user.name});
+    resp.send({ token, username, name: user.name, id: user.id });
 });
 
 export default loginRouter;

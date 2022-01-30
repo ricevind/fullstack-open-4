@@ -112,6 +112,7 @@ export const authSlice = createSlice({
       userApi.endpoints.login.matchFulfilled,
       (state, action) => {
         const user = action.payload;
+        console.log({ user });
         state.token = user.token;
         state.user = user;
       }

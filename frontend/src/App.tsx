@@ -1,3 +1,4 @@
+import "./index.css";
 import React, { useEffect, ReactNode } from "react";
 import BlogsPage from "./pages/BlogsPage";
 import Login from "./components/Login";
